@@ -30,4 +30,6 @@ RUN docker-maven-download confluent kafka-connect-avro-converter "$CONFLUENT_VER
     docker-maven-download central org/apache/avro avro "$AVRO_VERSION" 35469fee6d74ecbadce4773bfe3a204c && \
     docker-maven-download apicurio "$APICURIO_VERSION" a25a604ae3e194bc5deba0040aae2a98
 
+COPY 3rdparty/ $KAFKA_CONNECT_PLUGINS_DIR/
+
 USER 1001

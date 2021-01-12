@@ -4,6 +4,7 @@ Custom Kafka-Connect-Image for Strimzi. Base-image contains
 * APICURIO registry-client
 * Confluent-Registry-cient
 * Avro-Libraries
+* Some useful 3rdparty libraries
 
 JDBC-Image additionally contains
 
