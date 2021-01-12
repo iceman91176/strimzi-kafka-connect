@@ -1,4 +1,4 @@
-FROM witcom-strimzi-kafka-connect-base:0.0.1
+FROM strimzi-kafka-connect-base:0.0.1
 USER root:root
 
 ARG MAVEN_REPO_CENTRAL=""

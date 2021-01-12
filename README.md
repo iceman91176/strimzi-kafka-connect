@@ -11,7 +11,7 @@ JDBC-Image additionally contains
 * maridab, sql-server, oracle drivers
 
 
-##Building images
+## Building images
 
 Pass a custom maven-central-repo url as build-arg, e.g.
 
