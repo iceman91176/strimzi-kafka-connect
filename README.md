@@ -47,3 +47,82 @@ A real-life example looks like that
 ```
 RUN docker-maven-download generic com/github/jcustenborder kafka-connect-transform-common 0.1.0.36 b20c5ae75d8b083a9a8a6d049508290d
 ```
+
+## Build custom strimzi-image
+If a newer kafka-connect release is required than strimzi.io provides. It is possible to build a custom image like that. Be careful - it only works within a release-train. Don't try going from 2.6 to 2.7 
+
+### Requirements
+See https://github.com/strimzi/strimzi-kafka-operator/blob/master/development-docs/DEV_GUIDE.md#build-pre-requisites
+
+You **don't** need
+
+* helm
+* kubernetes/openshift
+* asciidoctor
+
+Be sure to use **v3** of the **right** yq-project 
+
+### Download the strimzi-release
+Download & unpack the release where you are basing the custom image on, eg 
+
+```
+BASE_RELEASE=0.20.1
+curl https://github.com/strimzi/strimzi-kafka-operator/archive/$BASE_RELEASE.tar.gz
+tar -zxf $BASE_RELEASE.tar.gz
+cd strimzi-kafka-operator-$BASE_RELEASE
+```
+
+### Add custom-kafka release
+Add the kafka-version to kafka-versions.yaml
+
+```
+- version: 2.6.1
+  format: 2.6
+  protocol: 2.6
+  url: https://archive.apache.org/dist/kafka/2.6.1/kafka_2.12-2.6.1.tgz
+  checksum: 105BF29E4BED9F1B7A7A3CAADF016DF8AA774F6F509E3606529F8231EA4CAB89C38236C58BE9C2E9BD3C52C2917892EA5D3A5EC0BD94BD8A5F7257522A5AF4DB
+  zookeeper: 3.5.8
+  third-party-libs: 2.6.x
+  default: true
+```
+
+You can remove the other versions, since it only increases the build-time.
+
+### Modify-build script
+The default build-script expects the whole dev-ecosystem because it wants to build strimzi-operator. Since we don't want that we have to slightly modify the build-script in **docker-images/build.sh**
+
+Locate the lines that state
+
+```
+base_images="base"
+java_images="operator jmxtrans"
+```
+
+and change them to
+
+```
+base_images=""
+java_images=""
+```
+
+### Run build, tag & push
+Change to ./docker-images
+
+Run build script. If you use podman, it can help to explicitely use docker-format
+
+```
+DOCKER_CMD="podman" DOCKER_BUILD_ARGS="--format docker" ./build.sh docker_build
+```
+
+Tag it with your regitry, org and the version
+
+```
+DOCKER_REGISTRY=my-registry DOCKER_ORG=strimzi DOCKER_TAG=$BASE_RELEASE ./build.sh docker_tag_default
+```
+This will create the following tag
+
+* my-registry/strimzi/kafka:0.20.1-kafka-2.6.1
+
+Push as usual.
+
+
