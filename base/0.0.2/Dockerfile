@@ -28,8 +28,7 @@ RUN docker-maven-download confluent kafka-connect-avro-converter "$CONFLUENT_VER
     docker-maven-download central com/fasterxml/jackson/core jackson-databind "$AVRO_JACKSON_VERSION" 057751b4e2dd1104be8caad6e9a3e589 && \
     docker-maven-download central com/fasterxml/jackson/core jackson-annotations "$AVRO_JACKSON_VERSION" d9e46501509b1751d64c495ab088a6cf && \
     docker-maven-download central org/apache/avro avro "$AVRO_VERSION" 35469fee6d74ecbadce4773bfe3a204c && \
-    docker-maven-download apicurio "$APICURIO_VERSION" a25a604ae3e194bc5deba0040aae2a98
-
-COPY 3rdparty/ $KAFKA_CONNECT_PLUGINS_DIR/
+    docker-maven-download apicurio "$APICURIO_VERSION" a25a604ae3e194bc5deba0040aae2a98 && \
+    docker-maven-download generic com/github/jcustenborder kafka-connect-transform-common 0.1.0.36 b20c5ae75d8b083a9a8a6d049508290d
 
 USER 1001

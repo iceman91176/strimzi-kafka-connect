@@ -32,7 +32,7 @@ maven_dep() {
     DOWNLOAD_FILE="$DOWNLOAD_FILE_TMP_PATH/$FILE"
     test -d $DOWNLOAD_FILE_TMP_PATH || mkdir -p $DOWNLOAD_FILE_TMP_PATH
     curl -sfSL -o "$DOWNLOAD_FILE" "$REPO/$GROUP/$PACKAGE/$VERSION/$FILE"
-    #echo "$REPO/$GROUP/$PACKAGE/$VERSION/$FILE"
+    echo "$REPO/$GROUP/$PACKAGE/$VERSION/$FILE"
     echo "$MD5_CHECKSUM  $DOWNLOAD_FILE" | md5sum -c -
 }
 
@@ -83,6 +83,19 @@ maven_apicurio_converter() {
     tar -xzf "$DOWNLOAD_FILE" -C "$KAFKA_CONNECT_PLUGINS_DIR/apicurio" && rm "$DOWNLOAD_FILE"
 }
 
+maven_generic_plugin() {
+    if [[ -z "$KAFKA_CONNECT_PLUGINS_DIR" ]] ; then
+        echo "WARNING: KAFKA_CONNECT_PLUGINS_DIR is not set. Skipping generic-plugin loading..."
+        return
+    fi
+    if [[ ! -d "$KAFKA_CONNECT_PLUGINS_DIR" ]] ; then
+        echo "WARNING: KAFKA_CONNECT_PLUGINS_DIR is not a directory. Skipping generic-plugin loading..."
+        return
+    fi
+    maven_dep $MAVEN_REPO_CENTRAL $1 $2 $3 "$2-$3.tar.gz" $4
+    tar -xzf "$DOWNLOAD_FILE" -C "$KAFKA_CONNECT_PLUGINS_DIR/" && rm "$DOWNLOAD_FILE"
+}
+
 case $1 in
     "central" ) shift
             maven_central_dep ${@}
@@ -102,4 +115,8 @@ case $1 in
     "apicurio" ) shift
             maven_apicurio_converter ${@}
             ;;
+    "generic" ) shift
+            maven_generic_plugin ${@}
+            ;;
+
 esac
