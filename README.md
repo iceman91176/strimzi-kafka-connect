@@ -66,8 +66,8 @@ Be sure to use **v3** of the **right** yq-project
 Download & unpack the release where you are basing the custom image on, eg 
 
 ```
-BASE_RELEASE=0.20.1
-curl https://github.com/strimzi/strimzi-kafka-operator/archive/$BASE_RELEASE.tar.gz
+BASE_RELEASE=0.21.1
+wget https://github.com/strimzi/strimzi-kafka-operator/archive/$BASE_RELEASE.tar.gz
 tar -zxf $BASE_RELEASE.tar.gz
 cd strimzi-kafka-operator-$BASE_RELEASE
 ```
@@ -94,18 +94,25 @@ The default build-script expects the whole dev-ecosystem because it wants to bui
 Locate the lines that state
 
 ```
-base_images="base"
 java_images="operator jmxtrans"
+kafka_images="kafka test-client"
 ```
 
 and change them to
 
 ```
-base_images=""
 java_images=""
+kafka_images="kafka"
 ```
 
 ### Run build, tag & push
+
+```
+cd kafka-agent && make & cd ..
+cd tracing-agent && make & cd ..
+cd mirror-maker-agent && make & cd ..
+```
+
 Change to ./docker-images
 
 Run build script. If you use podman, it can help to explicitely use docker-format
