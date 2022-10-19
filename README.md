@@ -1,4 +1,9 @@
+# DEPRECATED AND UNMAINTAINED
+
+This is not needed any more since strimzi is able to build the image itself -> https://strimzi.io/blog/2021/03/29/connector-build/
+
 # strimzi-kafka-connect
+
 Custom Kafka-Connect-Image for Strimzi. Base-image contains
 
 * APICURIO registry-client
